@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetSquad - Competitive Programming Groups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #475569;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--surface);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .content {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .input {
+            background: var(--background);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .groups-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .group-item {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .group-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .group-item.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .group-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .group-meta {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+        }
+
+        .leaderboard {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .rank {
+            font-weight: bold;
+            color: var(--accent);
+            min-width: 30px;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+        }
+
+        .member-stats {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+        }
+
+        .solved-count {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-content {
+            background: var(--surface-light);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            max-width: 70%;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+
+        .message-text {
+            margin-top: 0.25rem;
+        }
+
+        .message-time {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+        }
+
+        .error {
+            background: var(--danger);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            background: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background) 0%, var(--surface) 100%);
+        }
+
+        .login-card {
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+
+            .content {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- Login Screen -->
+        <div class="login-container" id="loginScreen">
+            <div class="login-card">
+                <h1 class="login-title">LeetSquad</h1>
+                <p class="login-subtitle">Connect with your LeetCode username</p>
+                
+                <div id="loginError" class="error" style="display: none;"></div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="leetcodeUsername">LeetCode Username</label>
+                        <input type="text" id="leetcodeUsername" class="input" required>
+                    </div>
+                    <button type="submit" class="btn" id="loginBtn">Connect</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" style="display: none;">
+            <header class="header">
+                <div class="logo">LeetSquad</div>
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span id="userName">User</span>
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <main class="main">
+                <aside class="sidebar">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Groups</h3>
+                        <button class="btn" onclick="showCreateGroupModal()">+</button>
+                    </div>
+                    
+                    <div class="groups-list" id="groupsList">
+                        <div class="loading">Loading groups...</div>
+                    </div>
+                </aside>
+
+                <div class="content">
+                    <div class="tabs">
+                        <div class="tab active" onclick="showTab('leaderboard')">Leaderboard</div>
+                        <div class="tab" onclick="showTab('chat')">Chat</div>
+                    </div>
+
+                    <div class="tab-content active" id="leaderboard">
+                        <div id="groupStats" class="stats-grid">
+                            <!-- Group stats will be loaded here -->
+                        </div>
+                        <div class="leaderboard" id="leaderboardList">
+                            <div class="loading">Select a group to view leaderboard</div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="chat">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="loading">Select a group to start chatting</div>
+                            </div>
+                            <div class="chat-input">
+                                <input type="text" id="messageInput" class="input" placeholder="Type your message...">
+                                <button class="btn" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Create/Join Group Modal -->
+        <div class="modal" id="groupModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create or Join Group</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="showModalTab('create')">Create</div>
+                    <div class="tab" onclick="showModalTab('join')">Join</div>
+                </div>
+
+                <div class="tab-content active" id="createGroup">
+                    <form id="createGroupForm">
+                        <div class="form-group">
+                            <label for="groupName">Group Name</label>
+                            <input type="text" id="groupName" class="input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="groupDescription">Description</label>
+                            <input type="text" id="groupDescription" class="input">
+                        </div>
+                        <button type="submit" class="btn">Create Group</button>
+                    </form>
+                </div>
+
+                <div class="tab-content" id="joinGroup">
+                    <form id="joinGroupForm">
+                        <div class="form-group">
+                            <label for="groupCode">Group Code</label>
+                            <input type="text" id="groupCode" class="input" required>
+                        </div>
+                        <button type="submit" class="btn">Join Group</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script>
+        // App state
+        let currentUser = null;
+        let currentGroup = null;
+        let socket = null;
+        let groups = [];
+
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                validateToken(token);
+            }
+        });
+
+        // Authentication
+        async function validateToken(token) {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    currentUser = await response.json();
+                    showMainApp();
+                } else {
+                    localStorage.removeItem('authToken');
+                }
+            } catch (error) {
+                console.error('Token validation failed:', error);
+                localStorage.removeItem('authToken');
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('leetcodeUsername').value;
+            const btn = document.getElementById('loginBtn');
+            const error = document.getElementById('loginError');
+            
+            btn.textContent = 'Connecting...';
+            btn.disabled = true;
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ leetcodeUsername: username })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    currentUser = data.user;
+                    showMainApp();
+                } else {
+                    error.textContent = data.error || 'Login failed';
+                    error.style.display = 'block';
+                }
+            } catch (error) {
+                error.textContent = 'Network error. Please try again.';
+                error.style.display = 'block';
+            } finally {
+                btn.textContent = 'Connect';
+                btn.disabled = false;
+            }
+        });
+
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
+            
+            // Initialize socket
+            initializeSocket();
+            
+            // Load groups
+            loadGroups();
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            if (socket) socket.disconnect();
+            location.reload();
+        }
+
+        // Socket.io
+        function initializeSocket() {
+            socket = io('http://localhost:3000', {
+                auth: { token: localStorage.getItem('authToken') }
+            });
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+
+        
+    // ... other socket listeners
+    socket.on('new-message', (message) => {
+        console.log('Frontend received new-message:', message); // Log received message
+        addMessageToChat(message);
+    });
+
+    socket.on('error', (err) => {
+        console.error('Socket error:', err);
+    });
+    // ...
+
+        }
+
+        // Groups
+        async function loadGroups() {
+            try {
+                const response = await fetch(`${API_BASE}/groups`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    groups = data.groups;
+                    renderGroups();
+                }
+            } catch (error) {
+                console.error('Failed to load groups:', error);
+            }
+        }
+
+        function renderGroups() {
+            const container = document.getElementById('groupsList');
+            
+            if (groups.length === 0) {
+                container.innerHTML = '<div class="loading">No groups yet. Create one!</div>';
+                return;
+            }
+
+            container.innerHTML = groups.map(group => `
+                <div class="group-item" onclick="selectGroup(${group.id})">
+                    <div class="group-name">${group.name}</div>
+                    <div class="group-meta">
+                        ${group.memberCount} members • Code: ${group.code}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function selectGroup(groupId) {
+            // Update UI
+            document.querySelectorAll('.group-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.group-item').classList.add('active');
+
+            // Leave previous group
+            if (currentGroup && socket) {
+                socket.emit('leave-group', currentGroup.id);
+            }
+
+            // Load group data
+            try {
+                const response = await fetch(`${API_BASE}/groups/${groupId}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+                });
+
+                if (response.ok) {
+                    currentGroup = await response.json();
+                    renderLeaderboard();
+                    loadChatMessages();
+                    
+                    // Join group socket room
+                    if (socket) {
+                        socket.emit('join-group', groupId);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load group:', error);
+            }
+        }
+
+        function renderLeaderboard() {
+            const statsContainer = document.getElementById('groupStats');
+            const leaderboardContainer = document.getElementById('leaderboardList');
+
+            // Group stats
+            const totalMembers = currentGroup.members.length;
+            const totalSolved = currentGroup.members.reduce((sum, member) => sum + member.solved, 0);
+            const avgSolved = Math.round(totalSolved / totalMembers);
+
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${totalMembers}</div>
+                    <div class="stat-label">Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${totalSolved}</div>
+                    <div class="stat-label">Total Solved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avgSolved}</div>
+                    <div class="stat-label">Avg Solved</div>
+                </div>
+            `;
+
+            // Leaderboard
+            leaderboardContainer.innerHTML = currentGroup.members.map(member => `
+                <div class="member-item">
+                    <div class="rank">#${member.rank}</div>
+                    <div class="avatar">${member.username[0].toUpperCase()}</div>
+                    <div class="member-info">
+                        <div class="member-name">${member.username}</div>
+                        <div class="member-stats">
+                            <span class="solved-count">${member.solved} solved</span> • 
+                            ${member.successRate}% success rate
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Chat
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(`${API_BASE}/chat/${currentGroup.group.id}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderChatMessages(data.messages);
+                }
+            } catch (error) {
+                console.error('Failed to load chat:', error);
+            }
+        }
+
+        function renderChatMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            
+            container.innerHTML = messages.map(message => `
+                <div class="message">
+                    <div class="avatar">${message.username[0].toUpperCase()}</div>
+                    <div class="message-content">
+                        <div class="message-author">${message.username}</div>
+                        <div class="message-text">${message.message}</div>
+                        <div class="message-time">${message.timestamp}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addMessageToChat(message) {
+            const container = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.innerHTML = `
+                <div class="avatar">${message.username[0].toUpperCase()}</div>
+                <div class="message-content">
+                    <div class="message-author">${message.username}</div>
+                    <div class="message-text">${message.message}</div>
+                    <div class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</div>
+                </div>
+            `;
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message || !currentGroup || !socket) return;
+
+            socket.emit('send-message', {
+                groupId: currentGroup.group.id,
+                message: message
+            });
+
+            input.value = '';
+        }
+
+        // Handle Enter key in message input
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Modals and tabs
+        function showCreateGroupModal() {
+            document.getElementById('groupModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('groupModal').classList.remove('active');
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function showModalTab(tabName) {
+            document.querySelectorAll('#groupModal .tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#groupModal .tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName === 'create' ? 'createGroup' : 'joinGroup').classList.add('active');
+        }
+
+        // Group forms
+        document.getElementById('createGroupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('groupName').value;
+            const description = document.getElementById('groupDescription').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/groups`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    loadGroups();
+                    document.getElementById('createGroupForm').reset();
+                }
+            } catch (error) {
+                console.error('Failed to create group:', error);
+            }
+        });
+
+        document.getElementById('joinGroupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const code = document.getElementById('groupCode').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/groups/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    loadGroups();
+                    document.getElementById('joinGroupForm').reset();
+                }
+            } catch (error) {
+                console.error('Failed to join group:', error);
+            }
+        });
+    </script>
+</body>
+</html>
