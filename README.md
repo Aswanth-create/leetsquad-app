@@ -22,3 +22,9 @@ LeetSquad is a full-stack collaboration web app where users can create or join g
 cd backend
 npm install
 node server.js
+
+cd frontend
+# if it's React + Vite
+npm install
+npm run dev
+
